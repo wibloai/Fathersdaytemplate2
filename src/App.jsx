@@ -5,7 +5,7 @@ import './App.css'
 const DATA = {
   theme_style: 'retro',
   content: {
-    dad_name: 'Arvind Sharma',
+    dad_name: 'Papa',
     hero_tagline: 'Special Delivery for',
     custom_letter:
       'Dear Dad,\n\nThank you for everything you gave without ever being asked. For the early mornings, the late nights, and the quiet sacrifices that shaped everything I am.\n\nI see your hands in every problem I solve, your patience in every moment I hold my temper, and your laugh in the way I forget myself and just feel happy.\n\nYou taught me that love is a verb — something you do every single day, not something you say once. I watched you live that truth for as long as I can remember.\n\nThank you for the bike rides and the road trips. For the long drives where we talked about nothing and everything. For showing up, always — without fail, without question.\n\nYou are my first hero, my compass, and my favourite human. I would choose you a hundred times over.\n\nHappy Father\'s Day, Dad. I love you more than I\'ll ever say right.\n\nAlways yours,',
@@ -251,7 +251,10 @@ function PhaseLetter({ onPlay }) {
               {paragraphs.map((para, i) => (
                 <p key={i} className="letter-para">{para}</p>
               ))}
-              <p className="letter-sign">Always yours, ♡</p>
+              <p className="letter-sign">
+                Always yours, ♡<br />
+                <span className="letter-name-placeholder">— Yours</span>
+              </p>
             </div>
 
             {showCTA && (

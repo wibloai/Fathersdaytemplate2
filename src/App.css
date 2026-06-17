@@ -504,6 +504,18 @@
   margin: 0;
 }
 
+.letter-name-placeholder {
+  display: inline-block;
+  font-family: 'Caveat', cursive;
+  font-size: 1.15rem;
+  color: #B24030;
+  border-bottom: 1.5px dashed #B24030;
+  padding-bottom: 1px;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
 .letter-sign {
   font-family: 'Caveat', cursive;
   font-size: 1.15rem;
