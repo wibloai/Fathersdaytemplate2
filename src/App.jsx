@@ -36,10 +36,11 @@ const DATA = {
 }
 
 // ─── Phase 1: The Delivery (Envelope) ──────────────────────────────────────
+// animPhase: 'idle' → 'opening' (flap lifts + letter rises) → 'out' (fade away)
 function PhaseEnvelope({ onOpen }) {
-  const [typed, setTyped] = useState('')
-  const [ready, setReady] = useState(false)
-  const [closing, setClosing] = useState(false)
+  const [typed, setTyped]       = useState('')
+  const [ready, setReady]       = useState(false)
+  const [animPhase, setAnimPhase] = useState('idle') // idle | opening | out
   const fullText = `${DATA.content.hero_tagline} ${DATA.content.dad_name}`
 
   useEffect(() => {
@@ -59,9 +60,10 @@ function PhaseEnvelope({ onOpen }) {
   }, [fullText])
 
   const handleTap = () => {
-    if (!ready || closing) return
-    setClosing(true)
-    setTimeout(onOpen, 700)
+    if (!ready || animPhase !== 'idle') return
+    setAnimPhase('opening')
+    setTimeout(() => setAnimPhase('out'), 1000)
+    setTimeout(onOpen, 1550)
   }
 
   return (
@@ -71,37 +73,42 @@ function PhaseEnvelope({ onOpen }) {
         <span className="blink-cursor" aria-hidden="true">|</span>
       </p>
 
+      {/* Envelope scene — perspective wrapper */}
       <div
-        className={`envelope-wrap ${closing ? 'envelope-wrap--closing' : ''} ${ready ? 'envelope-wrap--ready' : ''}`}
+        className={`env-scene env-scene--${animPhase} ${ready ? 'env-scene--ready' : ''}`}
         onClick={handleTap}
         role="button"
         aria-label="Tap to open envelope"
         tabIndex={0}
         onKeyDown={e => e.key === 'Enter' && handleTap()}
       >
-        <svg className="envelope-svg" viewBox="0 0 280 190" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Envelope body */}
+        {/* Letter that peeks out as flap opens */}
+        <div className="env-letter-peek">
+          <div className="env-letter-line" />
+          <div className="env-letter-line" />
+          <div className="env-letter-line env-letter-line--short" />
+          <p className="env-letter-text">with love ♡</p>
+        </div>
+
+        {/* Envelope body SVG — static (no top flap path) */}
+        <svg className="env-body-svg" viewBox="0 0 280 190" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect x="3" y="3" width="274" height="184" rx="8" fill="#EDE0C4" stroke="#C8A87A" strokeWidth="2.5"/>
-          {/* Left shadow panel */}
-          <path d="M3 3 L3 187 L100 100Z" fill="#DFD0B0" stroke="#C8A87A" strokeWidth="1.5"/>
-          {/* Right shadow panel */}
-          <path d="M277 3 L277 187 L180 100Z" fill="#DFD0B0" stroke="#C8A87A" strokeWidth="1.5"/>
-          {/* Bottom flap */}
-          <path d="M3 187 L140 92 L277 187Z" fill="#D9C99A" stroke="#C8A87A" strokeWidth="1.5"/>
-          {/* Top flap (V crease) */}
-          <path d="M3 3 L140 96 L277 3" stroke="#C8A87A" strokeWidth="2" fill="none"/>
-          {/* Wax seal */}
+          <path d="M3 3 L3 187 L100 100Z"       fill="#DFD0B0" stroke="#C8A87A" strokeWidth="1.5"/>
+          <path d="M277 3 L277 187 L180 100Z"    fill="#DFD0B0" stroke="#C8A87A" strokeWidth="1.5"/>
+          <path d="M3 187 L140 92 L277 187Z"     fill="#D9C99A" stroke="#C8A87A" strokeWidth="1.5"/>
           <circle cx="140" cy="130" r="18" fill="#B24030" opacity="0.9"/>
           <circle cx="140" cy="130" r="14" fill="#C4553A" opacity="0.85"/>
           <text x="140" y="135" textAnchor="middle" fill="#FAE8E0" fontSize="14" fontFamily="Georgia,serif">♥</text>
-          {/* Postage stamp */}
           <rect x="226" y="14" width="38" height="48" rx="2" fill="#F0E8D0" stroke="#C8A87A" strokeWidth="1" strokeDasharray="3 2"/>
           <rect x="230" y="18" width="30" height="32" rx="1" fill="#D4B896"/>
           <text x="245" y="36" textAnchor="middle" fill="#7A5A3A" fontSize="9" fontFamily="monospace">♡</text>
           <text x="245" y="48" textAnchor="middle" fill="#7A5A3A" fontSize="5" fontFamily="monospace">DAD</text>
         </svg>
 
-        {ready && !closing && (
+        {/* Animated flap — triangle clip, rotates back on open */}
+        <div className="env-flap" aria-hidden="true" />
+
+        {ready && animPhase === 'idle' && (
           <div className="tap-hint-wrap">
             <span className="tap-hint">Tap to Open</span>
             <span className="tap-hint-arrow">↓</span>
@@ -117,8 +124,8 @@ function PhaseEnvelope({ onOpen }) {
 // ─── Phase 2: The Polaroid Stack ────────────────────────────────────────────
 // Rotation and positional offsets for the stacked look
 const CARD_ROTATIONS  = ['-4deg', '3.5deg', '-2deg', '4.5deg', '-3deg', '2deg']
-const CARD_STACK_TOP  = ['0px', '-5px', '-10px', '-15px', '-20px']
-const CARD_STACK_LEFT = ['0px', '4px',  '-3px',  '5px',   '-4px']
+const CARD_STACK_TOP  = ['0px', '-8px', '-16px', '-24px', '-32px']
+const CARD_STACK_LEFT = ['0px', '6px',  '-5px',  '8px',   '-7px']
 
 function PhasePolaroids({ onDone }) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
