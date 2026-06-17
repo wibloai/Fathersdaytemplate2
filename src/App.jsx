@@ -321,16 +321,16 @@ function CassetteGraphic({ spinning, size = 200 }) {
 }
 
 // ─── Phase 4: Cassette Climax ───────────────────────────────────────────────
-// 8 positions evenly distributed across the full viewport (avoid dead centre)
+// 8 positions — strict edge hugging, wide gap around the centre panel
 const SCATTER_POSITIONS = [
-  { top: '2%',    left: '1%',    rotate: '-12deg' },
-  { top: '3%',    left: '30%',   rotate: '6deg'   },
-  { top: '2%',    right: '2%',   rotate: '10deg'  },
-  { top: '38%',   left: '0%',    rotate: '-7deg'  },
-  { top: '38%',   right: '0%',   rotate: '8deg'   },
-  { bottom: '2%', left: '3%',    rotate: '5deg'   },
-  { bottom: '2%', left: '32%',   rotate: '-9deg'  },
-  { bottom: '2%', right: '2%',   rotate: '11deg'  },
+  { top: '2%',    left: '1%',    rotate: '-11deg' },  // top-left
+  { top: '1%',    right: '1%',   rotate: '9deg'   },  // top-right
+  { top: '30%',   left: '-1%',   rotate: '-6deg'  },  // mid-left
+  { top: '30%',   right: '-1%',  rotate: '7deg'   },  // mid-right
+  { bottom: '1%', left: '2%',    rotate: '5deg'   },  // bottom-left
+  { bottom: '1%', right: '2%',   rotate: '-9deg'  },  // bottom-right
+  { top: '3%',    left: '22%',   rotate: '4deg'   },  // top inner-left
+  { top: '3%',    right: '22%',  rotate: '-7deg'  },  // top inner-right
 ]
 
 function PhaseClimax() {
