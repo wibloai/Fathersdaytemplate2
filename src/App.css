@@ -1,0 +1,559 @@
+/* ══════════════════════════════════════════════════
+   SCRAPBOOK ENGINE — THE ANALOG SCRAPBOOK
+   Palette: #F4EFE6 cream | #1A1A1A charcoal | white polaroid borders
+   Fonts: Special Elite (typewriter) | Caveat (handwritten) | IM Fell (serif)
+══════════════════════════════════════════════════ */
+
+/* ── Shell ── */
+.scrapbook-root {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #F4EFE6;
+  position: relative;
+}
+
+/* ── Phase base — full-screen, centred column ── */
+.phase {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+
+/* ══════════════════════════════════════════════════
+   PHASE 1 — THE DELIVERY (ENVELOPE)
+══════════════════════════════════════════════════ */
+.phase-1 {
+  background: #F4EFE6;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 38px,
+      rgba(180, 160, 120, 0.12) 38px,
+      rgba(180, 160, 120, 0.12) 39px
+    );
+}
+
+/* Typewriter headline */
+.p1-tagline {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  color: #4A3A28;
+  letter-spacing: 0.05em;
+  margin: 0 0 2.5rem;
+  text-align: center;
+  padding: 0 1rem;
+  min-height: 2em;
+}
+
+.blink-cursor {
+  color: #B24030;
+  animation: blink 0.7s step-end infinite;
+  font-weight: 700;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Envelope */
+.envelope-wrap {
+  position: relative;
+  cursor: default;
+  transition: transform 0.3s ease, opacity 0.6s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.envelope-wrap--ready {
+  cursor: pointer;
+}
+
+.envelope-wrap--ready:hover {
+  transform: scale(1.03) translateY(-4px);
+}
+
+.envelope-wrap--closing {
+  transform: scale(0.7) translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope-svg {
+  width: clamp(220px, 55vw, 340px);
+  filter: drop-shadow(0 8px 24px rgba(100, 70, 30, 0.22));
+  transition: filter 0.3s ease;
+}
+
+.envelope-wrap--ready:hover .envelope-svg {
+  filter: drop-shadow(0 14px 36px rgba(100, 70, 30, 0.32));
+}
+
+/* Pulsing "Tap to Open" badge */
+.tap-hint-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  animation: tapPulse 1.6s ease infinite;
+}
+
+@keyframes tapPulse {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50%       { transform: translateY(5px); opacity: 0.6; }
+}
+
+.tap-hint {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: #B24030;
+  background: #FAF0E0;
+  border: 1.5px solid #C8A87A;
+  border-radius: 20px;
+  padding: 0.35rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(178, 64, 48, 0.12);
+}
+
+.tap-hint-arrow {
+  color: #B24030;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+/* Footer */
+.p1-footer {
+  margin: 2rem 0 0;
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem;
+  color: #8A7058;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+
+/* ══════════════════════════════════════════════════
+   PHASE 2 — THE POLAROID STACK
+══════════════════════════════════════════════════ */
+.phase-2 {
+  background: #F0E8D8;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(200, 168, 120, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(200, 168, 120, 0.08) 0%, transparent 60%);
+  gap: 0;
+}
+
+.p2-header {
+  font-family: 'Special Elite', monospace;
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
+  color: #8A7058;
+  letter-spacing: 0.12em;
+  margin: 0 0 2.5rem;
+  text-transform: uppercase;
+}
+
+/* Stage: fixed area where all cards live, absolutely stacked */
+.polaroid-stage {
+  position: relative;
+  width: clamp(220px, 55vw, 280px);
+  height: clamp(300px, 60vh, 380px);
+}
+
+/* Every polaroid is absolute inside the stage */
+.polaroid {
+  position: absolute;
+  width: 100%;
+  top: var(--top, 0);
+  left: var(--left, 0);
+  transform: rotate(var(--rot, 0deg));
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.5s ease;
+  cursor: default;
+  /* Polaroid white border style */
+  background: #FFFFFF;
+  border-radius: 3px;
+  padding: 10px 10px 44px;
+  box-shadow:
+    0 4px 14px rgba(60, 40, 10, 0.18),
+    0 1px 4px rgba(60, 40, 10, 0.12);
+}
+
+.polaroid--top {
+  cursor: pointer;
+}
+
+.polaroid--top:hover {
+  box-shadow:
+    0 10px 30px rgba(60, 40, 10, 0.28),
+    0 2px 8px rgba(60, 40, 10, 0.14);
+}
+
+/* Swiped: flies off to the right */
+.polaroid--swiped {
+  transform: translateX(140%) rotate(var(--rot, 14deg)) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.polaroid-photo {
+  width: 100%;
+  overflow: hidden;
+  background: #E8E0D0;
+  border-radius: 1px;
+}
+
+.polaroid-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+.polaroid-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.polaroid-caption {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  color: #2A1E10;
+  line-height: 1.3;
+}
+
+.polaroid-year {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.65rem;
+  color: #8A7058;
+  letter-spacing: 0.08em;
+}
+
+/* "tap to swipe" nudge on the top card */
+.swipe-nudge {
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem;
+  color: #B24030;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  animation: nudgeBounce 1.4s ease infinite;
+}
+
+@keyframes nudgeBounce {
+  0%, 100% { transform: translateX(-50%) translateX(0); }
+  50%       { transform: translateX(-50%) translateX(6px); }
+}
+
+.p2-counter {
+  margin: 4rem 0 0;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.85rem;
+  color: #8A7058;
+  letter-spacing: 0.1em;
+}
+
+
+/* ══════════════════════════════════════════════════
+   PHASE 3 — THE FOLDED NOTE
+══════════════════════════════════════════════════ */
+.phase-3 {
+  background: #F4EFE6;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+/* Paper container — transitions between folded and open */
+.paper {
+  width: clamp(280px, 90vw, 580px);
+  background: #FEFCF5;
+  border: 1px solid rgba(180, 150, 100, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 8px rgba(80, 60, 20, 0.12),
+    0 8px 32px rgba(80, 60, 20, 0.08);
+  transition: max-height 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.paper--folded {
+  max-height: 240px;
+}
+
+.paper--open {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Folded closed face */
+.paper-closed-face {
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  position: relative;
+}
+
+.fold-crease {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(160, 130, 80, 0.25);
+}
+
+.fold-crease-1 { top: 33.3%; }
+.fold-crease-2 { top: 66.6%; }
+
+.paper-closed-text {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  color: #3A2A14;
+  margin: 0;
+  text-align: center;
+}
+
+.unfold-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  color: #FAF0E0;
+  background: #6A4E2A;
+  border-radius: 2px;
+  padding: 0.6rem 1.4rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(80, 50, 10, 0.25);
+}
+
+.unfold-btn:hover {
+  background: #8A6840;
+  transform: translateY(-1px);
+}
+
+/* Notebook ruling lines behind letter text */
+.paper-open-face {
+  position: relative;
+}
+
+.paper-ruling {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    rgba(160, 190, 220, 0.18) 31px,
+    rgba(160, 190, 220, 0.18) 32px
+  );
+  pointer-events: none;
+}
+
+/* Red margin line */
+.paper-open-face::before {
+  content: '';
+  position: absolute;
+  left: 52px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(200, 80, 60, 0.25);
+  pointer-events: none;
+}
+
+/* Letter content */
+.letter-inner {
+  position: relative;
+  padding: 2rem 2rem 1.5rem 3.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.letter-salutation {
+  font-family: 'Caveat', cursive;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2A1A08;
+  margin: 0;
+}
+
+.letter-para {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(1rem, 2.8vw, 1.15rem);
+  line-height: 2.05;
+  color: #1A1A1A;
+  margin: 0;
+}
+
+.letter-sign {
+  font-family: 'Caveat', cursive;
+  font-size: 1.15rem;
+  color: #4A3A28;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Cassette CTA at bottom of letter */
+.cassette-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 2rem 2rem;
+  border-top: 1px dashed rgba(160, 130, 80, 0.3);
+  margin: 0.5rem 0 0;
+  animation: fadeSlideUp 0.6s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Shared play button ── */
+.play-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.88rem;
+  letter-spacing: 0.18em;
+  color: #FAF0E0;
+  background: #B24030;
+  border-radius: 2px;
+  padding: 0.7rem 1.8rem;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(178, 64, 48, 0.3);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.play-btn:hover {
+  background: #C85040;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(178, 64, 48, 0.35);
+}
+
+.play-btn--lg {
+  font-size: 1rem;
+  padding: 0.9rem 2.4rem;
+  margin-top: 1.4rem;
+}
+
+
+/* ══════════════════════════════════════════════════
+   CASSETTE GRAPHIC
+══════════════════════════════════════════════════ */
+.cassette {
+  transition: filter 0.4s ease;
+}
+
+/* Full cassette slow spin when playing */
+.cassette--spinning {
+  animation: cassetteSpin 8s linear infinite;
+  filter: drop-shadow(0 6px 20px rgba(232, 201, 122, 0.35));
+}
+
+@keyframes cassetteSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+
+/* ══════════════════════════════════════════════════
+   PHASE 4 — CASSETTE CLIMAX
+══════════════════════════════════════════════════ */
+.phase-4 {
+  background: #F4EFE6;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Scattered polaroids in background corners */
+.scatter-card {
+  position: absolute;
+  width: clamp(110px, 18vw, 170px);
+  background: #FFFFFF;
+  padding: 7px 7px 34px;
+  border-radius: 2px;
+  box-shadow: 0 4px 14px rgba(60, 40, 10, 0.18);
+  opacity: 0;
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.scatter-card--visible {
+  opacity: 1;
+}
+
+.scatter-photo {
+  overflow: hidden;
+  background: #E8E0D0;
+}
+
+.scatter-photo img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.scatter-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 0.72rem;
+  color: #3A2A14;
+  text-align: center;
+  margin: 4px 0 0;
+  line-height: 1.3;
+  padding: 0 2px;
+}
+
+/* Centre cassette area */
+.climax-centre {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.climax-label {
+  font-family: 'Special Elite', monospace;
+  font-size: clamp(0.72rem, 2vw, 0.9rem);
+  letter-spacing: 0.1em;
+  color: #6A5038;
+  margin: 0 0 0.8rem;
+  text-align: center;
+}
+
+.climax-dedication {
+  font-family: 'Caveat', cursive;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  color: #2A1A08;
+  margin: 1rem 0 0;
+  animation: fadeSlideUp 0.8s ease forwards;
+}
+
+.climax-name {
+  color: #B24030;
+  font-weight: 700;
+}
