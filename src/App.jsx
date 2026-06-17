@@ -357,7 +357,7 @@ function PhaseClimax() {
         return (
           <div
             key={i}
-            className={`scatter-card ${playing ? 'scatter-card--visible' : ''}`}
+            className={`scatter-card scatter-card--pos-${i} ${playing ? 'scatter-card--visible' : ''}`}
             style={{
               ...placement,
               transform: `rotate(${rotate})`,
