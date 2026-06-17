@@ -817,6 +817,11 @@
   }
 
   /* Phase 2 */
+  .phase-2 {
+    justify-content: flex-start;
+    padding-top: 1.8rem;
+  }
+
   .p2-header {
     font-size: clamp(0.68rem, 3vw, 0.82rem);
     letter-spacing: 0.07em;

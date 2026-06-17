@@ -45,18 +45,22 @@ function PhaseEnvelope({ onOpen }) {
 
   useEffect(() => {
     let i = 0
+    let iv = null
     const start = setTimeout(() => {
-      const iv = setInterval(() => {
+      iv = setInterval(() => {
         i++
         setTyped(fullText.slice(0, i))
         if (i >= fullText.length) {
           clearInterval(iv)
+          iv = null
           setTimeout(() => setReady(true), 400)
         }
       }, 58)
-      return () => clearInterval(iv)
     }, 500)
-    return () => clearTimeout(start)
+    return () => {
+      clearTimeout(start)
+      if (iv) clearInterval(iv)
+    }
   }, [fullText])
 
   const handleTap = () => {
