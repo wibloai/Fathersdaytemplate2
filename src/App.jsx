@@ -9,7 +9,7 @@ const DATA = {
     hero_tagline: 'Special Delivery for',
     custom_letter:
       'Dear Dad,\n\nThank you for everything you gave without ever being asked. For the early mornings, the late nights, and the quiet sacrifices that shaped everything I am.\n\nI see your hands in every problem I solve, your patience in every moment I hold my temper, and your laugh in the way I forget myself and just feel happy.\n\nYou taught me that love is a verb — something you do every single day, not something you say once. I watched you live that truth for as long as I can remember.\n\nThank you for the bike rides and the road trips. For the long drives where we talked about nothing and everything. For showing up, always — without fail, without question.\n\nYou are my first hero, my compass, and my favourite human. I would choose you a hundred times over.\n\nHappy Father\'s Day, Dad. I love you more than I\'ll ever say right.\n\nAlways yours,',
-    music_source_url: '',
+    music_source_url: '/song.mp3',
     memory_photos: [
       {
         url: 'https://images.unsplash.com/photo-1529073526757-c0a9e0bc64e5?w=480&q=80',
@@ -130,10 +130,19 @@ const CARD_STACK_LEFT = ['0px', '6px',  '-5px',  '8px',   '-7px']
 function PhasePolaroids({ onDone }) {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const [swipedSet, setSwipedSet] = useState(new Set())
+  // 'entering' = cards fly out of envelope centre → 'ready' = interactive swipe
+  const [stackPhase, setStackPhase] = useState('entering')
   const photos = DATA.content.memory_photos
 
+  // Stagger each card's entrance, then unlock interaction
+  useEffect(() => {
+    const totalDelay = 300 + photos.length * 140 + 400
+    const t = setTimeout(() => setStackPhase('ready'), totalDelay)
+    return () => clearTimeout(t)
+  }, [photos.length])
+
   const handleTap = () => {
-    if (swipedSet.has(currentPhotoIndex)) return
+    if (stackPhase !== 'ready' || swipedSet.has(currentPhotoIndex)) return
 
     const next = new Set(swipedSet)
     next.add(currentPhotoIndex)
@@ -151,28 +160,35 @@ function PhasePolaroids({ onDone }) {
 
   return (
     <div className="phase phase-2">
-      <p className="p2-header">Swipe through the memories</p>
+      <p className={`p2-header ${stackPhase === 'ready' ? 'p2-header--visible' : ''}`}>
+        Swipe through the memories
+      </p>
 
       {/* Fixed-size area where all polaroids are stacked */}
       <div className="polaroid-stage">
         {photos.map((photo, i) => {
-          const isSwiped  = swipedSet.has(i)
-          const isTop     = i === currentPhotoIndex && !isSwiped
-          const rot       = CARD_ROTATIONS[i % CARD_ROTATIONS.length]
+          const isSwiped = swipedSet.has(i)
+          const isTop    = i === currentPhotoIndex && !isSwiped
+          const rot      = CARD_ROTATIONS[i % CARD_ROTATIONS.length]
           const stackTop  = CARD_STACK_TOP[Math.min(i, CARD_STACK_TOP.length - 1)]
           const stackLeft = CARD_STACK_LEFT[Math.min(i, CARD_STACK_LEFT.length - 1)]
 
           return (
             <div
               key={i}
-              className={`polaroid ${isSwiped ? 'polaroid--swiped' : ''} ${isTop ? 'polaroid--top' : ''}`}
+              className={`polaroid
+                ${isSwiped       ? 'polaroid--swiped'   : ''}
+                ${isTop          ? 'polaroid--top'       : ''}
+                ${stackPhase === 'entering' ? 'polaroid--entering' : 'polaroid--landed'}
+              `}
               style={{
                 zIndex: photos.length - i,
-                '--rot': isSwiped ? '14deg' : rot,
-                '--top':  stackTop,
-                '--left': stackLeft,
+                '--rot':   isSwiped ? '14deg' : rot,
+                '--top':   stackTop,
+                '--left':  stackLeft,
+                '--enter-delay': `${300 + i * 140}ms`,
               }}
-              onClick={isTop ? handleTap : undefined}
+              onClick={isTop && stackPhase === 'ready' ? handleTap : undefined}
             >
               <div className="polaroid-photo">
                 <img src={photo.url} alt={photo.caption} className="polaroid-img" />
@@ -182,7 +198,7 @@ function PhasePolaroids({ onDone }) {
                 <span className="polaroid-year">{photo.year}</span>
               </div>
 
-              {isTop && (
+              {isTop && stackPhase === 'ready' && (
                 <span className="swipe-nudge" aria-hidden="true">tap to swipe →</span>
               )}
             </div>
@@ -305,14 +321,16 @@ function CassetteGraphic({ spinning, size = 200 }) {
 }
 
 // ─── Phase 4: Cassette Climax ───────────────────────────────────────────────
-// Pre-defined scatter positions (corners + edges, not centre)
+// 8 positions evenly distributed across the full viewport (avoid dead centre)
 const SCATTER_POSITIONS = [
-  { top: '2%',   left: '1%',   rotate: '-11deg', scale: 0.72 },
-  { top: '4%',   right: '2%',  rotate: '8deg',   scale: 0.78 },
-  { top: '38%',  left: '0%',   rotate: '-5deg',  scale: 0.68 },
-  { top: '42%',  right: '1%',  rotate: '10deg',  scale: 0.7  },
-  { bottom: '3%',left: '4%',   rotate: '6deg',   scale: 0.73 },
-  { bottom: '5%',right: '3%',  rotate: '-8deg',  scale: 0.75 },
+  { top: '2%',    left: '1%',    rotate: '-12deg' },
+  { top: '3%',    left: '30%',   rotate: '6deg'   },
+  { top: '2%',    right: '2%',   rotate: '10deg'  },
+  { top: '38%',   left: '0%',    rotate: '-7deg'  },
+  { top: '38%',   right: '0%',   rotate: '8deg'   },
+  { bottom: '2%', left: '3%',    rotate: '5deg'   },
+  { bottom: '2%', left: '32%',   rotate: '-9deg'  },
+  { bottom: '2%', right: '2%',   rotate: '11deg'  },
 ]
 
 function PhaseClimax() {
@@ -329,18 +347,18 @@ function PhaseClimax() {
 
   return (
     <div className="phase phase-4">
-      {/* Scattered polaroids in background */}
-      {photos.map((photo, i) => {
-        const pos = SCATTER_POSITIONS[i % SCATTER_POSITIONS.length]
-        const { rotate, scale, ...placement } = pos
+      {/* Scatter all 8 positions — cycle through photos */}
+      {SCATTER_POSITIONS.map((pos, i) => {
+        const photo = photos[i % photos.length]
+        const { rotate, ...placement } = pos
         return (
           <div
             key={i}
             className={`scatter-card ${playing ? 'scatter-card--visible' : ''}`}
             style={{
               ...placement,
-              transform: `rotate(${rotate}) scale(${scale})`,
-              transitionDelay: `${i * 0.14}s`,
+              transform: `rotate(${rotate})`,
+              transitionDelay: `${i * 0.1}s`,
             }}
           >
             <div className="scatter-photo">

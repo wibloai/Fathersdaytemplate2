@@ -240,6 +240,12 @@
   letter-spacing: 0.12em;
   margin: 0 0 2.5rem;
   text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.p2-header--visible {
+  opacity: 1;
 }
 
 /* Stage: fixed area where all cards live, absolutely stacked */
@@ -255,17 +261,29 @@
   width: 100%;
   top: var(--top, 0);
   left: var(--left, 0);
-  transform: rotate(var(--rot, 0deg));
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.5s ease;
   cursor: default;
-  /* Polaroid white border style */
   background: #FFFFFF;
   border-radius: 3px;
   padding: 14px 14px 62px;
   box-shadow:
     0 4px 14px rgba(60, 40, 10, 0.18),
     0 1px 4px rgba(60, 40, 10, 0.12);
+}
+
+/* Cards enter from below (spilling out of the envelope) */
+.polaroid--entering {
+  transform: translateY(60px) scale(0.82) rotate(var(--rot, 0deg));
+  opacity: 0;
+  transition: none;
+}
+
+/* Cards land into stack position — staggered via --enter-delay */
+.polaroid--landed {
+  transform: translateY(0) scale(1) rotate(var(--rot, 0deg));
+  opacity: 1;
+  transition:
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) var(--enter-delay, 0ms),
+    opacity   0.5s ease var(--enter-delay, 0ms);
 }
 
 .polaroid--top {
@@ -278,11 +296,13 @@
     0 2px 8px rgba(60, 40, 10, 0.14);
 }
 
-/* Swiped: flies off to the right */
+/* Swiped: flies off to the right (overrides landed) */
 .polaroid--swiped {
-  transform: translateX(140%) rotate(var(--rot, 14deg)) !important;
-  opacity: 0;
+  transform: translateX(140%) rotate(14deg) !important;
+  opacity: 0 !important;
   pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity   0.5s ease !important;
 }
 
 .polaroid-photo {
@@ -564,16 +584,18 @@
   overflow: hidden;
 }
 
-/* Scattered polaroids in background corners */
+/* Scattered polaroids across the full viewport */
 .scatter-card {
   position: absolute;
-  width: clamp(110px, 18vw, 170px);
+  width: clamp(160px, 20vw, 240px);
   background: #FFFFFF;
-  padding: 7px 7px 34px;
+  padding: 10px 10px 44px;
   border-radius: 2px;
-  box-shadow: 0 4px 14px rgba(60, 40, 10, 0.18);
+  box-shadow:
+    0 6px 20px rgba(60, 40, 10, 0.2),
+    0 2px 6px rgba(60, 40, 10, 0.1);
   opacity: 0;
-  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .scatter-card--visible {
@@ -594,12 +616,12 @@
 
 .scatter-caption {
   font-family: 'Caveat', cursive;
-  font-size: 0.72rem;
+  font-size: 0.88rem;
   color: #3A2A14;
   text-align: center;
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   line-height: 1.3;
-  padding: 0 2px;
+  padding: 0 4px;
 }
 
 /* Centre cassette area */
