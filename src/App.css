@@ -231,6 +231,7 @@
     radial-gradient(circle at 20% 30%, rgba(200, 168, 120, 0.08) 0%, transparent 60%),
     radial-gradient(circle at 80% 70%, rgba(200, 168, 120, 0.08) 0%, transparent 60%);
   gap: 0;
+  padding: 1.5rem 0;
 }
 
 .p2-header {
@@ -825,7 +826,7 @@
 
   .polaroid-stage {
     width: min(88vw, 290px);
-    height: clamp(290px, 56vh, 390px);
+    height: clamp(250px, 48vh, 350px);
   }
 
   .polaroid {
@@ -983,7 +984,7 @@
 
   .polaroid-stage {
     width: 92vw;
-    height: clamp(270px, 54vh, 350px);
+    height: clamp(240px, 46vh, 320px);
   }
 
   .letter-inner {
