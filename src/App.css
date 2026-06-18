@@ -364,7 +364,7 @@
 }
 
 .p2-counter {
-  margin: 5.5rem 0 0;
+  margin: 2.6rem 0 0;
   font-family: 'Special Elite', monospace;
   font-size: 0.85rem;
   color: #8A7058;
@@ -746,7 +746,7 @@
   }
 
   .p2-counter {
-    margin: 4.2rem 0 0;
+    margin: 2.2rem 0 0;
   }
 
   /* Phase 3 */
@@ -817,11 +817,6 @@
   }
 
   /* Phase 2 */
-  .phase-2 {
-    justify-content: flex-start;
-    padding-top: 1.8rem;
-  }
-
   .p2-header {
     font-size: clamp(0.68rem, 3vw, 0.82rem);
     letter-spacing: 0.07em;
@@ -856,7 +851,7 @@
   }
 
   .p2-counter {
-    margin: 3.8rem 0 0;
+    margin: 2rem 0 0;
     font-size: 0.78rem;
   }
 
@@ -1044,7 +1039,7 @@
   }
 
   .p2-counter {
-    margin: 2rem 0 0;
+    margin: 1.4rem 0 0;
   }
 
   /* Phase 3 */
