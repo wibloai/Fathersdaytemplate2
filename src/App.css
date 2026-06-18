@@ -239,10 +239,12 @@
   font-size: clamp(0.8rem, 2.5vw, 1rem);
   color: #8A7058;
   letter-spacing: 0.12em;
-  margin: 0 0 2.5rem;
+  margin: 0 0 3.5rem;
   text-transform: uppercase;
   opacity: 0;
   transition: opacity 0.5s ease;
+  position: relative;
+  z-index: 20;
 }
 
 .p2-header--visible {
@@ -733,7 +735,7 @@
 
   /* Phase 2 */
   .p2-header {
-    margin: 0 0 1.8rem;
+    margin: 0 0 3rem;
     font-size: clamp(0.75rem, 2.8vw, 0.9rem);
   }
 
@@ -821,7 +823,7 @@
   .p2-header {
     font-size: clamp(0.68rem, 3vw, 0.82rem);
     letter-spacing: 0.07em;
-    margin: 0 0 1.2rem;
+    margin: 0 0 2.8rem;
   }
 
   .polaroid-stage {
